@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poxel.io Nexus</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo-container">
+                 <i class="fas fa-cubes"></i> <!-- Example Logo Icon -->
+                <h1>Poxel.io Nexus</h1>
+            </div>
+            <button id="logout-button" class="button-style" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </header>
+
+        <main>
+            <!-- Authentication Section -->
+            <section id="auth-section" class="auth-forms card">
+                <div id="login-form-container">
+                    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                    <form id="login-form">
+                        <div class="input-group">
+                            <i class="fas fa-envelope prefix-icon"></i>
+                            <input type="email" id="login-email" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock prefix-icon"></i>
+                            <input type="password" id="login-password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="button-style primary-button"><i class="fas fa-paper-plane"></i> Login</button>
+                    </form>
+                </div>
+                <div class="form-separator">
+                    <span>OR</span>
+                </div>
+                <div id="signup-form-container">
+                    <h2><i class="fas fa-user-plus"></i> Sign Up</h2>
+                    <form id="signup-form">
+                         <div class="input-group">
+                            <i class="fas fa-envelope prefix-icon"></i>
+                            <input type="email" id="signup-email" placeholder="Email" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock prefix-icon"></i>
+                            <input type="password" id="signup-password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="button-style secondary-button"><i class="fas fa-check-circle"></i> Sign Up</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- User Specific Content (shown when logged in) -->
+            <section id="user-content" style="display:none;">
+                <h2 id="welcome-message" class="welcome-title">Welcome!</h2>
+
+                <hr class="section-divider">
+
+                <!-- Item Randomizer/Unboxing -->
+                <section id="crates-section" class="card">
+                    <h3><i class="fas fa-box-open"></i> Discover Treasures: Open Crates!</h3>
+                    <p>Click a crate to unbox an item. What will you find?</p>
+                    <div id="crates-grid-loader" class="loader" style="display:none;"></div>
+                    <div id="crates-grid" class="grid-container">
+                        <!-- Crates will be loaded here by JavaScript -->
+                    </div>
+                </section>
+                <hr class="section-divider">
+
+                <!-- Owned Items -->
+                <section id="owned-items-section" class="card">
+                    <div class="section-header-actions">
+                        <h3><i class="fas fa-gem"></i> Your Collection</h3>
+                        <button id="open-item-request-modal-button" class="button-style secondary-button small-button" style="display:none;">
+                            <i class="fas fa-share-square"></i> Request In-Game Items
+                        </button>
+                    </div>
+                    <div id="owned-items-loader" class="loader" style="display:none;"></div>
+                    <div id="owned-items-list" class="grid-container item-grid">
+                        <!-- Items will be listed here -->
+                    </div>
+                </section>
+            </section>
+
+            <!-- Message Area for Toasts/Alerts -->
+            <div id="toast-container"></div>
+
+            <!-- Modal for Unboxed Item -->
+            <div id="item-reveal-modal" class="modal-overlay" style="display:none;">
+                <div class="modal-content card">
+                    <button id="close-modal-button" class="close-button">×</button>
+                    <h2>You've Unboxed!</h2>
+                    <div id="unboxed-item-display">
+                        <!-- Unboxed item details will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item Request Modal -->
+            <div id="item-request-modal" class="modal-overlay" style="display:none;">
+                <div class="modal-content card">
+                    <button id="close-request-modal-button" class="close-button">×</button>
+                    <h2>Request In-Game Items</h2>
+                    <p>Select items from your collection and enter your Poxel username. An email draft will be prepared for you to send to the admins.</p>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-user prefix-icon"></i>
+                        <input type="text" id="poxel-username-input" placeholder="Your Poxel Username (in-game)" required>
+                    </div>
+
+                    <h3>Select Items:</h3>
+                    <div id="requestable-items-loader" class="loader" style="display:none;"></div>
+                    <div id="requestable-items-list" class="grid-container item-grid request-item-grid">
+                        <!-- Selectable items will be listed here by JavaScript -->
+                    </div>
+                    
+                    <button id="submit-item-request-button" class="button-style primary-button">
+                        <i class="fas fa-paper-plane"></i> Prepare Request Email
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <footer>
+            <p>© <span id="current-year">2024</span> Poxel.io Nexus - Enhance Your Game!</p>
+        </footer>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <!-- No functions SDK needed for this version of email sending (using mailto:) -->
+
+    <script src="app.js"></script>
+</body>
+</html>
